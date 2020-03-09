@@ -208,7 +208,7 @@ TUNING.SPIDER_HIDER_DAMAGE = 45
 TUNING.SPIDER_MOON_HEALTH = 500
 TUNING.SPIDER_MOON_DAMAGE = 40
 TUNING.SPIDERQUEEN_HEALTH = 5000
-TUNING.SPIDERQUEEN_DAMAGE = 105
+TUNING.SPIDERQUEEN_DAMAGE = 195
 -- 地下蠕虫
 TUNING.WORM_HEALTH = 1200
 -- 各种狗
@@ -268,7 +268,7 @@ TUNING.DRAGONFLY_SPEED = 7
 TUNING.STALKER_ATRIUM_HEALTH = 32000
 TUNING.STALKER_ATRIUM_PHASE2_HEALTH = 20000
 -- 信天翁
-TUNING.MINOTAUR_HEALTH = 20000
+TUNING.MINOTAUR_HEALTH = 12000
 
 -- 史诗 Boss 额外掉落
 function ExtraLootForEpicBosses(inst)
@@ -306,6 +306,11 @@ AddPrefabPostInit("bearger", ExtraLootForEpicBosses)
 AddPrefabPostInit("deerclops", ExtraLootForEpicBosses)
 AddPrefabPostInit("moose", ExtraLootForEpicBosses)
 AddPrefabPostInit("beequeen", ExtraLootForEpicBosses)
+AddPrefabPostInit("antlion", ExtraLootForEpicBosses)
+AddPrefabPostInit("malbatross", ExtraLootForEpicBosses)
+AddPrefabPostInit("stalker_atrium", ExtraLootForEpicBosses)
+AddPrefabPostInit("toadstool", ExtraLootForEpicBosses)
+AddPrefabPostInit("toadstool_dark", ExtraLootForEpicBosses)
 
 -- 添加突进
 -- 武器具备 blinking 属性时触发
@@ -449,6 +454,11 @@ local function custom_lighter_onattack(weapon, attacker, target)
 			-- attacker.components.health:DoDelta(math.random(1, 3))
 		end
 
+		---------------------------------
+		---------------------------------
+		------ DoSpikeAttack Debug ------
+		---------------------------------
+		---------------------------------
 		if math.random() < 1 then
 			DoSpikeAttack(attacker, target)
 		end
