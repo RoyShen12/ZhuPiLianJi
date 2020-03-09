@@ -625,6 +625,7 @@ end)
 AddPrefabPostInit("wathgrithrhat", function (inst)
 	if TheWorld.ismastersim then
 		if inst.components.waterproofer then
+			-- 防水更多
 			inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL * 2)
 		end
 
@@ -641,6 +642,7 @@ end)
 AddPrefabPostInit("hambat", function (inst)
 	if TheWorld.ismastersim then
 
+		-- 为火腿棒添加范围攻击
 		local old_onattack_fn = inst.components.weapon.onattack
 		inst.components.weapon.onattack = function(weapon, attacker, target)
 			old_onattack_fn(weapon, attacker, target)
