@@ -4,7 +4,6 @@ local PI = GLOBAL.PI
 local GetRandomWithVariance = GLOBAL.GetRandomWithVariance
 local TheSim = GLOBAL.TheSim
 local SpawnPrefab = GLOBAL.SpawnPrefab
-local TheWorld = GLOBAL.TheWorld
 local Vector3 = GLOBAL.Vector3
 local shuffleArray = GLOBAL.shuffleArray
 
@@ -99,8 +98,8 @@ TUNING.TOADSTOOL_RESPAWN_TIME = 480 * 3
 
 -- 物品修改
 -- 火腿棒
-HAMBAT_DAMAGE = 98
-HAMBAT_MIN_DAMAGE_MODIFIER = .4
+TUNING.HAMBAT_DAMAGE = 98
+TUNING.HAMBAT_MIN_DAMAGE_MODIFIER = .4
 -- 步行手杖
 TUNING.CANE_SPEED_MULT = 1.44
 -- 打火机
@@ -133,6 +132,7 @@ TUNING.WOLFGANG_ATTACKMULT_WIMPY_MAX = .75
 TUNING.WOLFGANG_ATTACKMULT_WIMPY_MIN = .4
 -- 薇洛
 TUNING.WILLOW_ABSORPTION = 0.05
+TUNING.MAX_XUSHI = 15
 -- 女武神 长矛/头盔
 TUNING.WATHGRITHR_SPEAR_DAMAGE = 46
 TUNING.WATHGRITHR_SPEAR_USES = 600
@@ -320,7 +320,7 @@ AddPlayerPostInit(function(inst)
 	if inst.components.combat == nil then
 		return
 	end
-	if TheWorld.ismastersim and inst.prefab == "wathgrithr" then
+	if GLOBAL.TheWorld.ismastersim and inst.prefab == "wathgrithr" then
 		local old_start = inst.components.combat.StartAttack
 
 		inst.components.combat.StartAttack = function(self)
@@ -339,7 +339,7 @@ AddPlayerPostInit(function(inst)
 							local dy = sy - q * (sy - fy)
 							local dz = sz - q * (sz - fz)
 							-- 不会突进到水中
-							if TheWorld.Map:IsOceanTileAtPoint(dx, dy, dz) then
+							if GLOBAL.TheWorld.Map:IsOceanTileAtPoint(dx, dy, dz) then
 								return
 							end
 							-- 生成烟雾
@@ -389,7 +389,7 @@ local function custom_willow_sanityfn(inst)
 end
 
 AddPrefabPostInit("willow", function (inst)
-	if TheWorld.ismastersim then
+	if GLOBAL.TheWorld.ismastersim then
 		-- 移除纵火者（烧家）特性
 		-- inst:RemoveTag("pyromaniac")
 
@@ -408,6 +408,7 @@ AddPrefabPostInit("willow", function (inst)
 end)
 
 local variations = {1, 2, 3, 4, 5}
+
 local function DoSpikeAttack(inst, centerTarget)
 	local x, y, z = centerTarget.Transform:GetWorldPosition()
 	local inital_r = 1
@@ -416,20 +417,28 @@ local function DoSpikeAttack(inst, centerTarget)
 
 	shuffleArray(variations)
 
-	local num = math.random(2, 4)
+	local num = math.random(3, 6)
 	local dtheta = PI * 2 / num
 	local thetaoffset = math.random() * PI * 2
 	local delaytoggle = 0
+
+	local damage = 100
+	if inst.components.combat then
+		local weapon = inst.components.combat:GetWeapon()
+		damage = weapon.components.weapon.damage
+	end
+
 	for i = 1, num do
 		local r = 1.1 + math.random() * 1.75
 		local theta = i * dtheta + math.random() * dtheta * 0.8 + dtheta * 0.2
 			local x1 = x + r * math.cos(theta)
 			local z1 = z + r * math.sin(theta)
-			if TheWorld.Map:IsVisualGroundAtPoint(x1, 0, z1) and not TheWorld.Map:IsPointNearHole(Vector3(x1, 0, z1)) then
+			if GLOBAL.TheWorld.Map:IsVisualGroundAtPoint(x1, 0, z1) and not GLOBAL.TheWorld.Map:IsPointNearHole(Vector3(x1, 0, z1)) then
 				local spike = SpawnPrefab("moonspider_spike")
-				spike.components.combat:SetDefaultDamage(inst.components.weapon.damage or 100)
+				spike.spider_leader_isplayer = true
+				spike.components.combat:SetDefaultDamage(damage)
 				spike.Transform:SetPosition(x1, 0, z1)
-				spike:SetOwner(inst)
+				-- spike:SetOwner(inst)
 
 				if variations[i + 1] ~= 1 then
 					spike.AnimState:OverrideSymbol("spike01", "spider_spike", "spike0"..tostring(variations[i + 1]))
@@ -454,19 +463,15 @@ local function custom_lighter_onattack(weapon, attacker, target)
 			-- attacker.components.health:DoDelta(math.random(1, 3))
 		end
 
-		---------------------------------
-		---------------------------------
-		------ DoSpikeAttack Debug ------
-		---------------------------------
-		---------------------------------
-		if math.random() < 1 then
+		-- 60% 几率触发月光地刺
+		if math.random() < 0.6 then
 			DoSpikeAttack(attacker, target)
 		end
 	end
 end
 
 AddPrefabPostInit("lighter", function (inst)
-	if TheWorld.ismastersim then
+	if GLOBAL.TheWorld.ismastersim then
 
 		inst.components.weapon:SetOnAttack(custom_lighter_onattack)
 		inst.components.weapon:SetRange(5, 7)
@@ -475,17 +480,16 @@ AddPrefabPostInit("lighter", function (inst)
 		-- 蓄势 18% @ x5
 		-- 15层
 		inst.components.weapon.updateXuShi = (function ()
-			local xushiCengShu = 15
-			local recoverXuShi = math.floor(0.5 + xushiCengShu * 0.8)
+			local recoverXuShi = math.floor(0.5 + TUNING.MAX_XUSHI * 0.8)
 			local timmerInst = nil
 			return function (_inst, attacker)
 
-				if (_inst.xushi < xushiCengShu) then
+				if (_inst.xushi < TUNING.MAX_XUSHI) then
 					_inst.xushi = _inst.xushi + 1
 					local newDamage = math.floor(0.5 + TUNING.LIGHTER_DAMAGE * math.pow(1.18, _inst.xushi))
 					_inst:SetDamage(newDamage)
 					attacker.components.talker:Say("蓄势 [ " .. _inst.xushi .. " ] 武器伤害: " .. newDamage)
-				elseif (_inst.xushi == xushiCengShu) then
+				elseif (_inst.xushi == TUNING.MAX_XUSHI) then
 					attacker.components.talker:Say("蓄势 [ " .. _inst.xushi .. " ] 武器伤害: " .. _inst.damage)
 				end
 
@@ -497,7 +501,7 @@ AddPrefabPostInit("lighter", function (inst)
 					attacker.components.talker:Say("蓄势归零")
 				end)
 
-				-- 蓄势层数 > 80% 最大层数 时恢复精神和生命值
+				-- 蓄势层数 > 80% 最大层数时 恢复精神和生命值
 				if _inst.xushi >= recoverXuShi then
 					attacker.components.sanity:DoDelta(math.random(1, 2))
 					attacker.components.health:DoDelta(math.random(1, 5))
@@ -511,7 +515,7 @@ AddPrefabPostInit("lighter", function (inst)
 end)
 
 AddPrefabPostInit("wathgrithr", function (inst)
-	if TheWorld.ismastersim then
+	if GLOBAL.TheWorld.ismastersim then
 
 		if inst.components.combat then
 			-- 女武神空手 2 倍伤害
@@ -526,7 +530,7 @@ AddPrefabPostInit("wathgrithr", function (inst)
 end)
 
 AddPrefabPostInit("spear_wathgrithr", function (inst)
-	if TheWorld.ismastersim then
+	if GLOBAL.TheWorld.ismastersim then
 
 		inst.components.weapon.blinking = true
 		inst.components.weapon.blinking_damage_multiplier = 2.2
@@ -613,7 +617,7 @@ AddPrefabPostInit("spear_wathgrithr", function (inst)
     inst.components.blinkstaff.onblinkfn = function (staff, pos, caster)
 			if caster.components.sanity ~= nil and caster.components.hunger ~= nil then
 					caster.components.sanity:DoDelta(-25)
-					caster.components.hunger:DoDelta(-50)
+					caster.components.hunger:DoDelta(-30)
 			end
 			if staff.components.finiteuses ~= nil then
 				staff.components.finiteuses:Use(10)
@@ -623,7 +627,7 @@ AddPrefabPostInit("spear_wathgrithr", function (inst)
 end)
 
 AddPrefabPostInit("wathgrithrhat", function (inst)
-	if TheWorld.ismastersim then
+	if GLOBAL.TheWorld.ismastersim then
 		if inst.components.waterproofer then
 			-- 防水更多
 			inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL * 2)
@@ -634,13 +638,13 @@ AddPrefabPostInit("wathgrithrhat", function (inst)
 end)
 
 AddPrefabPostInit("armorruins", function (inst)
-	if TheWorld.ismastersim then
+	if GLOBAL.TheWorld.ismastersim then
 		inst.components.equippable.walkspeedmult = 1.1
 	end
 end)
 
 AddPrefabPostInit("hambat", function (inst)
-	if TheWorld.ismastersim then
+	if GLOBAL.TheWorld.ismastersim then
 
 		-- 为火腿棒添加范围攻击
 		local old_onattack_fn = inst.components.weapon.onattack
@@ -649,7 +653,7 @@ AddPrefabPostInit("hambat", function (inst)
 
 			if target and attacker.components.combat:IsValidTarget(target) then
 				local x, y, z = target.Transform:GetWorldPosition()
-				local ents = TheSim:FindEntities(x, y, z, 4)
+				local ents = TheSim:FindEntities(x, y, z, 3)
 					for k, v in pairs(ents) do
 						if attacker.components.combat:IsValidTarget(v)
 								and v ~= target and v.components.combat
