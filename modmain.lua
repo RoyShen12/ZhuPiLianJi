@@ -92,8 +92,10 @@ TUNING.BASE_COOK_TIME = 0.8
 TUNING.MOLEHAT_PERISHTIME = 480 * 4.5
 
 -- 生物生成时间
+-- 龙蝇
+TUNING.DRAGONFLY_RESPAWN_TIME = 480 * 3
 -- 地下蛤蟆
-TUNING.TOADSTOOL_RESPAWN_TIME = 480
+TUNING.TOADSTOOL_RESPAWN_TIME = 480 * 3
 
 -- 物品修改
 -- 火腿棒
@@ -168,6 +170,8 @@ TUNING.PIG_ELITE_FIGHTER_DAMAGE = 98
 -- 海象
 TUNING.WALRUS_DAMAGE = 45
 TUNING.WALRUS_HEALTH = 1000
+-- 高鸟
+TUNING.TALLBIRD_HEALTH = 1600
 -- 企鹅
 -- TUNING.PENGUIN_HEALTH = 250
 -- 大象
@@ -181,17 +185,19 @@ TUNING.ROOK_DAMAGE = 70
 TUNING.ROOK_HEALTH = 300 * 5
 TUNING.MINOTAUR_DAMAGE = 150
 TUNING.MINOTAUR_HEALTH = 2500 * 8
---
+-- 蜗牛
 -- TUNING.SLURTLE_HEALTH = 2000
---
+-- 闪电羊
 -- TUNING.LIGHTNING_GOAT_DAMAGE = 35
 -- TUNING.LIGHTNING_GOAT_HEALTH = 350 * 4
---
+-- 鹿
 -- TUNING.DEER_DAMAGE = 35
 -- TUNING.DEER_HEALTH = 450 * 2
 -- TUNING.DEER_GEMMED_DAMAGE = 60
 -- TUNING.DEER_GEMMED_HEALTH = 2500
-
+-- 触手
+TUNING.TENTACLE_HEALTH = 1200
+TUNING.TENTACLE_DAMAGE = 88
 -- 蜘蛛
 TUNING.SPIDER_HEALTH = 150
 TUNING.SPIDER_DAMAGE = 30
@@ -223,6 +229,10 @@ TUNING.ROCKY_DAMAGE = 100
 TUNING.ROCKY_HEALTH = 6000
 
 -- Boss
+-- 座狼
+TUNING.WARG_HEALTH = 6000
+-- 钢羊
+TUNING.SPAT_HEALTH = 8000
 -- 克劳斯
 TUNING.KLAUS_HEALTH = 50000
 TUNING.KLAUS_DAMAGE = 155
@@ -251,13 +261,51 @@ TUNING.BEEGUARD_DAMAGE = 35
 TUNING.DRAGONFLY_HEALTH = 100000
 TUNING.DRAGONFLY_DAMAGE = 445
 TUNING.DRAGONFLY_FIRE_DAMAGE = 625
+TUNING.DRAGONFLY_SPEED = 5 * 0.7
+TUNING.DRAGONFLY_FIRE_ATTACK_PERIOD = 3 * 0.7
+TUNING.DRAGONFLY_SPEED = 7
 -- 复活的骨架（远古编织者）
 TUNING.STALKER_ATRIUM_HEALTH = 32000
 TUNING.STALKER_ATRIUM_PHASE2_HEALTH = 20000
 -- 信天翁
 TUNING.MINOTAUR_HEALTH = 20000
 
+-- 史诗 Boss 额外掉落
+function ExtraLootForEpicBosses(inst)
+	if inst.components.lootdropper == nil then return end
 
+	for k = 1, 10 do
+		inst.components.lootdropper:AddChanceLoot("meat", 0.4)
+	end
+
+	for k = 1, 3 do
+		inst.components.lootdropper:AddChanceLoot("redgem", 0.2)
+	end
+	for k = 1, 3 do
+		inst.components.lootdropper:AddChanceLoot("bluegem", 0.2)
+	end
+	for k = 1, 3 do
+		inst.components.lootdropper:AddChanceLoot("yellowgem", 0.1)
+	end
+	for k = 1, 8 do
+		inst.components.lootdropper:AddChanceLoot("thulecite", 0.15)
+	end
+
+	inst.components.lootdropper:AddChanceLoot("amulet", 0.8)
+	inst.components.lootdropper:AddChanceLoot("shroom_skin", 0.5)
+
+	inst.components.lootdropper:AddChanceLoot("yellowstaff", 0.08)
+	inst.components.lootdropper:AddChanceLoot("greenstaff", 0.1)
+	inst.components.lootdropper:AddChanceLoot("orangestaff", 0.03)
+
+	inst.components.lootdropper:AddChanceLoot("blueamulet", 0.1)
+	inst.components.lootdropper:AddChanceLoot("orangeamulet", 0.1)
+end
+AddPrefabPostInit("dragonfly", ExtraLootForEpicBosses)
+AddPrefabPostInit("bearger", ExtraLootForEpicBosses)
+AddPrefabPostInit("deerclops", ExtraLootForEpicBosses)
+AddPrefabPostInit("moose", ExtraLootForEpicBosses)
+AddPrefabPostInit("beequeen", ExtraLootForEpicBosses)
 
 -- 添加突进
 -- 武器具备 blinking 属性时触发
