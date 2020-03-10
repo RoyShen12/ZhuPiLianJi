@@ -70,12 +70,14 @@ GLOBAL.c_dir = function (value, desciption, nesting)
         result[#result + 1] = string.format("%s}", indent)
       end
     end
-  end
+	end
+
   _dump(value, desciption, "- ", 1)
 
   for i, line in ipairs(result) do
     print(line)
-  end
+	end
+
 end
 
 -- 海钓
@@ -407,7 +409,7 @@ AddPrefabPostInit("willow", function (inst)
 	end
 end)
 
-local variations = {1, 2, 3, 4, 5}
+local variations = {1, 2, 3, 4, 5, 6, 7}
 
 local function DoSpikeAttack(inst, centerTarget)
 	local x, y, z = centerTarget.Transform:GetWorldPosition()
@@ -417,15 +419,15 @@ local function DoSpikeAttack(inst, centerTarget)
 
 	shuffleArray(variations)
 
-	local num = math.random(3, 6)
+	local num = math.random(2, 7)
 	local dtheta = PI * 2 / num
 	local thetaoffset = math.random() * PI * 2
 	local delaytoggle = 0
 
-	local damage = 100
+	local damage = 56
 	if inst.components.combat then
 		local weapon = inst.components.combat:GetWeapon()
-		damage = weapon.components.weapon.damage
+		damage = weapon.components.weapon.damage + (inst.components.combat.defaultdamage or 0)
 	end
 
 	for i = 1, num do
@@ -436,7 +438,7 @@ local function DoSpikeAttack(inst, centerTarget)
 			if GLOBAL.TheWorld.Map:IsVisualGroundAtPoint(x1, 0, z1) and not GLOBAL.TheWorld.Map:IsPointNearHole(Vector3(x1, 0, z1)) then
 				local spike = SpawnPrefab("moonspider_spike")
 				spike.spider_leader_isplayer = true
-				spike.components.combat:SetDefaultDamage(damage)
+				spike.components.combat:SetDefaultDamage(damage / 2)
 				spike.Transform:SetPosition(x1, 0, z1)
 				-- spike:SetOwner(inst)
 
@@ -537,7 +539,7 @@ AddPrefabPostInit("spear_wathgrithr", function (inst)
 		inst.components.weapon.blinking_with_aoe = true
 		inst.components.weapon.blinking_aoe_radius = 4
 		inst.components.weapon.blinking_aoe_damage = TUNING.WATHGRITHR_SPEAR_DAMAGE * 1.8
-		inst.components.weapon:SetRange(6, 2)
+		inst.components.weapon:SetRange(7, 2)
 
 		local oldOnEquip = inst.components.equippable.onequipfn
 		local oldOnUnEquipfn = inst.components.equippable.onunequipfn
@@ -612,17 +614,18 @@ AddPrefabPostInit("spear_wathgrithr", function (inst)
 		inst.components.equippable.walkspeedmult = 1.05
 
 		--瞬移杖效果
-		inst:AddComponent("blinkstaff")
-		inst.components.blinkstaff:SetFX("sand_puff_large_front", "sand_puff_large_back")
-    inst.components.blinkstaff.onblinkfn = function (staff, pos, caster)
-			if caster.components.sanity ~= nil and caster.components.hunger ~= nil then
-					caster.components.sanity:DoDelta(-25)
-					caster.components.hunger:DoDelta(-30)
-			end
-			if staff.components.finiteuses ~= nil then
-				staff.components.finiteuses:Use(10)
-			end
-		end
+		-- inst:AddComponent("blinkstaff")
+		-- inst.components.blinkstaff:SetFX("sand_puff_large_front", "sand_puff_large_back")
+    -- inst.components.blinkstaff.onblinkfn = function (staff, pos, caster)
+		-- 	if caster.components.sanity ~= nil and caster.components.hunger ~= nil then
+		-- 			caster.components.sanity:DoDelta(-25)
+		-- 			caster.components.hunger:DoDelta(-30)
+		-- 	end
+		-- 	if staff.components.finiteuses ~= nil then
+		-- 		staff.components.finiteuses:Use(10)
+		-- 	end
+		-- end
+
 	end
 end)
 
