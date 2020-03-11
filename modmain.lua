@@ -636,13 +636,13 @@ AddPrefabPostInit("wathgrithrhat", function (inst)
 			inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL * 2)
 		end
 
-		inst.components.equippable.walkspeedmult = 1.1
+		inst.components.equippable.walkspeedmult = 1.05
 	end
 end)
 
 AddPrefabPostInit("armorruins", function (inst)
 	if GLOBAL.TheWorld.ismastersim then
-		inst.components.equippable.walkspeedmult = 1.1
+		inst.components.equippable.walkspeedmult = 1.05
 	end
 end)
 
@@ -663,7 +663,7 @@ AddPrefabPostInit("hambat", function (inst)
 								-- 不会对墙体造成 AOE
 								and string.find(v.prefab, "wall") == nil then
 							-- print("blinking aoe to ", v)
-							v.components.combat:GetAttacked(attacker, attacker.components.combat:CalcDamage(v, weapon, 1.8), weapon)
+							v.components.combat:GetAttacked(attacker, attacker.components.combat:CalcDamage(v, weapon, 0.5), weapon)
 						end
 					end
 			end

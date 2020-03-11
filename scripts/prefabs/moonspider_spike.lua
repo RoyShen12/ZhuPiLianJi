@@ -61,8 +61,10 @@ local function DoAttack(inst)
     )
   ) do
     if
-      v:IsValid() and not v:IsInLimbo() and not (v.components.health ~= nil and v.components.health:IsDead()) and
-        shouldhit(inst, v)
+      v:IsValid() and not v:IsInLimbo() and
+      not (v.components.health ~= nil and v.components.health:IsDead()) and
+      shouldhit(inst, v) and
+      string.find(v.prefab, "wall") == nil
      then
       local range = ATTACK_RADIUS + v:GetPhysicsRadius(.5)
       if v:GetDistanceSqToPoint(x, y, z) < range * range and inst.components.combat:CanTarget(v) then
