@@ -409,7 +409,7 @@ AddPrefabPostInit("willow", function (inst)
 	end
 end)
 
-local variations = {1, 2, 3, 4, 5, 6, 7}
+local variations = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
 
 local function DoSpikeAttack(inst, centerTarget)
 	local x, y, z = centerTarget.Transform:GetWorldPosition()
@@ -419,7 +419,7 @@ local function DoSpikeAttack(inst, centerTarget)
 
 	shuffleArray(variations)
 
-	local num = math.random(2, 7)
+	local num = math.random(5, 10)
 	local dtheta = PI * 2 / num
 	local thetaoffset = math.random() * PI * 2
 	local delaytoggle = 0
