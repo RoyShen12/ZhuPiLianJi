@@ -11,6 +11,16 @@ local total_day_time = 480
 local wilson_health = 150
 local __mmb = 150 * 0.7 -- multiplay modification base
 
+local SPEED = {
+	willow = {9, 6},
+	waxwell = {11, 8},
+	wendy = {10, 7},
+	wathgrithr = {9, 5},
+	webber = {10, 7},
+	wx78 = {12, 11},
+	wortox = {9, 5}
+}
+
 -- 海钓
 -- 甩杆更远
 TUNING.OCEAN_FISHING.MAX_CAST_DIST = 24
@@ -78,9 +88,9 @@ TUNING.WOLFGANG_ATTACKMULT_WIMPY_MIN = .4
 TUNING.WILLOW_ABSORPTION = 0.05
 TUNING.MAX_XUSHI = 5
 -- 温蒂
-TUNING.WENDY_HEALTH = 150
-TUNING.WENDY_HUNGER = 150
-TUNING.WENDY_SANITY = 150
+TUNING.WENDY_HEALTH = 180
+TUNING.WENDY_HUNGER = 180
+TUNING.WENDY_SANITY = 180
 TUNING.WENDY_DAMAGE_MULT = 0.88
 TUNING.ABIGAIL_SPEED = 9
 TUNING.ABIGAIL_HEALTH = wilson_health * 8
@@ -531,8 +541,8 @@ AddPrefabPostInit("willow", function (inst)
 		-- 薇洛饥饿更慢
 		inst.components.hunger.hungerrate = 0.89 * TUNING.WILSON_HUNGER_RATE
 
-		inst.components.locomotor.runspeed = 10
-		inst.components.locomotor.walkspeed = 7
+		inst.components.locomotor.runspeed = SPEED.willow[0]
+		inst.components.locomotor.walkspeed = SPEED.willow[1]
 		-- 更加耐热
 		inst.components.temperature:SetOverheatHurtRate(TUNING.WILSON_HEALTH / TUNING.WILLOW_OVERHEAT_KILL_TIME / 10)
 	end
@@ -652,10 +662,51 @@ AddPrefabPostInit("wathgrithr", function (inst)
 			inst.components.combat.defaultdamage = TUNING.UNARMED_DAMAGE * 2
 		end
 
-		inst.components.locomotor.runspeed = 9
-		inst.components.locomotor.walkspeed = 5
+		inst.components.locomotor.runspeed = SPEED.wathgrithr[0]
+		inst.components.locomotor.walkspeed = SPEED.wathgrithr[1]
 		-- 女武神饥饿更快
 		inst.components.hunger.hungerrate = 2.25 * TUNING.WILSON_HUNGER_RATE
+	end
+end)
+
+AddPrefabPostInit("waxwell", function (inst)
+	if TheWorld.ismastersim then
+		inst.components.petleash:SetMaxPets(8)
+		inst.components.sanity:SetMax(1000)
+
+		inst.components.sanity.dapperness = TUNING.DAPPERNESS_LARGE * 2
+
+		inst.components.locomotor.runspeed = SPEED.waxwell[0]
+		inst.components.locomotor.walkspeed = SPEED.waxwell[0]
+		inst.components.hunger.hungerrate = 1.1 * TUNING.WILSON_HUNGER_RATE
+	end
+end)
+
+AddPrefabPostInit("wendy", function (inst)
+	if TheWorld.ismastersim then
+		inst.components.locomotor.runspeed = SPEED.wendy[0]
+		inst.components.locomotor.walkspeed = SPEED.wendy[1]
+	end
+end)
+
+AddPrefabPostInit("webber", function (inst)
+	if TheWorld.ismastersim then
+		inst.components.locomotor.runspeed = SPEED.webber[0]
+		inst.components.locomotor.walkspeed = SPEED.webber[1]
+	end
+end)
+
+AddPrefabPostInit("wx78", function (inst)
+	if TheWorld.ismastersim then
+		inst.components.locomotor.runspeed = SPEED.wx78[0]
+		inst.components.locomotor.walkspeed = SPEED.wx78[1]
+	end
+end)
+
+AddPrefabPostInit("wortox", function (inst)
+	if TheWorld.ismastersim then
+		inst.components.locomotor.runspeed = SPEED.wortox[0]
+		inst.components.locomotor.walkspeed = SPEED.wortox[1]
 	end
 end)
 
