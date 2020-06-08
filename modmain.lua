@@ -541,8 +541,8 @@ AddPrefabPostInit("willow", function (inst)
 		-- 薇洛饥饿更慢
 		inst.components.hunger.hungerrate = 0.89 * TUNING.WILSON_HUNGER_RATE
 
-		inst.components.locomotor.runspeed = SPEED.willow[0]
-		inst.components.locomotor.walkspeed = SPEED.willow[1]
+		inst.components.locomotor.runspeed = SPEED.willow[1]
+		inst.components.locomotor.walkspeed = SPEED.willow[2]
 		-- 更加耐热
 		inst.components.temperature:SetOverheatHurtRate(TUNING.WILSON_HEALTH / TUNING.WILLOW_OVERHEAT_KILL_TIME / 10)
 	end
@@ -662,8 +662,8 @@ AddPrefabPostInit("wathgrithr", function (inst)
 			inst.components.combat.defaultdamage = TUNING.UNARMED_DAMAGE * 2
 		end
 
-		inst.components.locomotor.runspeed = SPEED.wathgrithr[0]
-		inst.components.locomotor.walkspeed = SPEED.wathgrithr[1]
+		inst.components.locomotor.runspeed = SPEED.wathgrithr[1]
+		inst.components.locomotor.walkspeed = SPEED.wathgrithr[2]
 		-- 女武神饥饿更快
 		inst.components.hunger.hungerrate = 2.25 * TUNING.WILSON_HUNGER_RATE
 	end
@@ -676,37 +676,37 @@ AddPrefabPostInit("waxwell", function (inst)
 
 		inst.components.sanity.dapperness = TUNING.DAPPERNESS_LARGE * 2
 
-		inst.components.locomotor.runspeed = SPEED.waxwell[0]
-		inst.components.locomotor.walkspeed = SPEED.waxwell[0]
+		inst.components.locomotor.runspeed = SPEED.waxwell[1]
+		inst.components.locomotor.walkspeed = SPEED.waxwell[2]
 		inst.components.hunger.hungerrate = 1.1 * TUNING.WILSON_HUNGER_RATE
 	end
 end)
 
 AddPrefabPostInit("wendy", function (inst)
 	if TheWorld.ismastersim then
-		inst.components.locomotor.runspeed = SPEED.wendy[0]
-		inst.components.locomotor.walkspeed = SPEED.wendy[1]
+		inst.components.locomotor.runspeed = SPEED.wendy[1]
+		inst.components.locomotor.walkspeed = SPEED.wendy[2]
 	end
 end)
 
 AddPrefabPostInit("webber", function (inst)
 	if TheWorld.ismastersim then
-		inst.components.locomotor.runspeed = SPEED.webber[0]
-		inst.components.locomotor.walkspeed = SPEED.webber[1]
+		inst.components.locomotor.runspeed = SPEED.webber[1]
+		inst.components.locomotor.walkspeed = SPEED.webber[2]
 	end
 end)
 
 AddPrefabPostInit("wx78", function (inst)
 	if TheWorld.ismastersim then
-		inst.components.locomotor.runspeed = SPEED.wx78[0]
-		inst.components.locomotor.walkspeed = SPEED.wx78[1]
+		inst.components.locomotor.runspeed = SPEED.wx78[1]
+		inst.components.locomotor.walkspeed = SPEED.wx78[2]
 	end
 end)
 
 AddPrefabPostInit("wortox", function (inst)
 	if TheWorld.ismastersim then
-		inst.components.locomotor.runspeed = SPEED.wortox[0]
-		inst.components.locomotor.walkspeed = SPEED.wortox[1]
+		inst.components.locomotor.runspeed = SPEED.wortox[1]
+		inst.components.locomotor.walkspeed = SPEED.wortox[2]
 	end
 end)
 
