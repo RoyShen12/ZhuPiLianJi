@@ -828,7 +828,8 @@ AddPrefabPostInit("hambat", function (inst)
 		inst.components.weapon.onattack = function(weapon, attacker, target)
 			old_onattack_fn(weapon, attacker, target)
 
-			if target and attacker.components.combat:IsValidTarget(target) then
+			if target and attacker.components.combat:IsValidTarget(target)
+			and (attacker.prefab == "wolfgang" or attacker.prefab == "wathgrithr") then
 				local x, y, z = target.Transform:GetWorldPosition()
 				local ents = TheSim:FindEntities(x, y, z, 3)
 					for k, v in pairs(ents) do
