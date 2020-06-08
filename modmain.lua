@@ -184,7 +184,7 @@ TUNING.HAMBAT_MIN_DAMAGE_MODIFIER = .2
 TUNING.PIPE_DART_DAMAGE = 150
 TUNING.YELLOW_DART_DAMAGE = 250
 
-TUNING.WATHGRITHR_SPEAR_DAMAGE = 46
+TUNING.WATHGRITHR_SPEAR_DAMAGE = 76
 TUNING.WATHGRITHR_SPEAR_USES = 600
 -- 铠甲
 TUNING.ARMOR_WATHGRITHRHAT = __mmb * 140
@@ -193,7 +193,8 @@ TUNING.ARMOR_WATHGRITHRHAT_ABSORPTION = 7 / 9
 TUNING.ARMORGRASS = __mmb * 2.5
 TUNING.ARMORWOOD = __mmb * 5
 TUNING.ARMOR_FOOTBALLHAT = __mmb * 13
-TUNING.ARMORMARBLE = __mmb * 16
+TUNING.ARMORMARBLE = __mmb * 30
+TUNING.ARMORMARBLE_ABSORPTION = 0.92
 TUNING.ARMORSNURTLESHELL = __mmb * 11
 TUNING.ARMORMARBLE_SLOW = 0.9
 TUNING.ARMORSLURPER_SLOW_HUNGER = 1 / 3
@@ -715,9 +716,9 @@ AddPrefabPostInit("spear_wathgrithr", function (inst)
 
 		inst.components.weapon.blinking = true
 		inst.components.weapon.blinking_damage_multiplier = 0.5
-		inst.components.weapon.blinking_with_aoe = false
-		-- inst.components.weapon.blinking_aoe_radius = 4
-		-- inst.components.weapon.blinking_aoe_damage = TUNING.WATHGRITHR_SPEAR_DAMAGE * 1.8
+		inst.components.weapon.blinking_with_aoe = true
+		inst.components.weapon.blinking_aoe_radius = 2
+		inst.components.weapon.blinking_aoe_damage = TUNING.WATHGRITHR_SPEAR_DAMAGE * 0.75
 
 		local oldOnEquip = inst.components.equippable.onequipfn
 		local oldOnUnEquipfn = inst.components.equippable.onunequipfn
@@ -831,13 +832,13 @@ AddPrefabPostInit("hambat", function (inst)
 			if target and attacker.components.combat:IsValidTarget(target)
 			and (attacker.prefab == "wolfgang" or attacker.prefab == "wathgrithr") then
 				local x, y, z = target.Transform:GetWorldPosition()
-				local ents = TheSim:FindEntities(x, y, z, 3)
+				local ents = TheSim:FindEntities(x, y, z, 4)
 					for k, v in pairs(ents) do
 						if attacker.components.combat:IsValidTarget(v)
 								and v ~= target and v.components.combat
 								-- 不会对墙体造成 AOE
 								and string.find(v.prefab, "wall") == nil then
-							v.components.combat:GetAttacked(attacker, attacker.components.combat:CalcDamage(v, weapon, 0.5), weapon)
+							v.components.combat:GetAttacked(attacker, attacker.components.combat:CalcDamage(v, weapon, 0.8), weapon)
 						end
 					end
 			end
