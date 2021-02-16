@@ -11,16 +11,6 @@ local total_day_time = 480
 local wilson_health = 150
 local base_armor_durability_105 = 105
 
-local SPEED = {
-	willow = {9, 6},
-	waxwell = {11, 8},
-	wendy = {10, 7},
-	wathgrithr = {9, 5},
-	webber = {10, 7},
-	wx78 = {12, 11},
-	wortox = {9, 5}
-}
-
 -- 海钓
 -- 甩杆更远
 TUNING.OCEAN_FISHING.MAX_CAST_DIST = 24
@@ -32,7 +22,8 @@ TUNING.OCEAN_FISHING.LINE_TENSION_HIGH = 0.97
 -- TUNING.BASE_COOK_TIME = 0.8
 -- 鼹鼠帽
 TUNING.MOLEHAT_PERISHTIME = total_day_time * 4.5
-
+-- 矿工帽
+TUNING.MINERHAT_LIGHTTIME = TUNING.MINERHAT_LIGHTTIME * 3
 -- 生物生成时间
 -- 龙蝇
 -- TUNING.DRAGONFLY_RESPAWN_TIME = total_day_time * 30
@@ -602,9 +593,6 @@ AddPrefabPostInit("willow", function (inst)
 		inst.components.health:SetAbsorptionAmount(TUNING.WILLOW_ABSORPTION)
 		-- 薇洛饥饿更慢
 		inst.components.hunger.hungerrate = 0.89 * TUNING.WILSON_HUNGER_RATE
-
-		inst.components.locomotor.runspeed = SPEED.willow[1]
-		inst.components.locomotor.walkspeed = SPEED.willow[2]
 		-- 更加耐热
 		inst.components.temperature:SetOverheatHurtRate(TUNING.WILSON_HEALTH / TUNING.WILLOW_OVERHEAT_KILL_TIME / 10)
 	end
@@ -617,9 +605,6 @@ AddPrefabPostInit("wathgrithr", function (inst)
 			-- 女武神空手 2 倍伤害
 			inst.components.combat.defaultdamage = TUNING.UNARMED_DAMAGE * 2
 		end
-
-		inst.components.locomotor.runspeed = SPEED.wathgrithr[1]
-		inst.components.locomotor.walkspeed = SPEED.wathgrithr[2]
 		-- 女武神饥饿更快
 		inst.components.hunger.hungerrate = 2.25 * TUNING.WILSON_HUNGER_RATE
 	end
@@ -632,48 +617,22 @@ AddPrefabPostInit("waxwell", function (inst)
 
 		inst.components.sanity.dapperness = TUNING.DAPPERNESS_LARGE * 2
 
-		inst.components.locomotor.runspeed = SPEED.waxwell[1]
-		inst.components.locomotor.walkspeed = SPEED.waxwell[2]
 		inst.components.hunger.hungerrate = 1.1 * TUNING.WILSON_HUNGER_RATE
 	end
 end)
 
-AddPrefabPostInit("wendy", function (inst)
-	if TheWorld.ismastersim then
-		inst.components.locomotor.runspeed = SPEED.wendy[1]
-		inst.components.locomotor.walkspeed = SPEED.wendy[2]
-	end
-end)
-
-AddPrefabPostInit("webber", function (inst)
-	if TheWorld.ismastersim then
-		inst.components.locomotor.runspeed = SPEED.webber[1]
-		inst.components.locomotor.walkspeed = SPEED.webber[2]
-	end
-end)
-
-AddPrefabPostInit("wx78", function (inst)
-	if TheWorld.ismastersim then
-		inst.components.locomotor.runspeed = SPEED.wx78[1]
-		inst.components.locomotor.walkspeed = SPEED.wx78[2]
-	end
-end)
-
-AddPrefabPostInit("wortox", function (inst)
-	if TheWorld.ismastersim then
-		inst.components.locomotor.runspeed = SPEED.wortox[1]
-		inst.components.locomotor.walkspeed = SPEED.wortox[2]
-	end
-end)
-
 AddPrefabPostInit("myth_yutu", function (inst)
-	inst:AddTag("fastbuilder")
-	inst:AddTag("hungrybuilder")
+	if TheWorld.ismastersim then
+		inst:AddTag("fastbuilder")
+		inst:AddTag("hungrybuilder")
+
+		inst.components.inventory:GiveItem(DebugSpawn("halloweenpotion_health_large"))
+		inst.components.inventory:GiveItem(DebugSpawn("halloweenpotion_sanity_large"))
+	end
 end)
 
 AddPrefabPostInit("spear_wathgrithr", function (inst)
 	if TheWorld.ismastersim then
-
 		inst.components.weapon.blinking = true
 	end
 end)
@@ -683,16 +642,19 @@ AddPrefabPostInit("yt_daoyao", function (inst)
 		local w_w = inst.components.weapon
 		w_w:SetRange(4, 6)
 		w_w:SetProjectile("ice_projectile")
+
 		if inst.components.tool == nil then
 			inst:AddComponent("tool")
 			inst.components.tool:SetAction(ACTIONS.CHOP, 8)
 			inst.components.tool:SetAction(ACTIONS.DIG)
 			inst.components.tool:SetAction(ACTIONS.MINE, 8)
 		end
+
 		if inst.components.waterproofer == nil then
 			inst:AddComponent("waterproofer")
 			inst.components.waterproofer:SetEffectiveness(0.5)
 		end
+
 		inst.components.equippable.walkspeedmult = 1.15
 	end
 end)
@@ -717,6 +679,12 @@ AddPrefabPostInit("wathgrithrhat", function (inst)
 end)
 
 AddPrefabPostInit("armorruins", function (inst)
+	if TheWorld.ismastersim then
+		inst.components.equippable.walkspeedmult = 1.05
+	end
+end)
+
+AddPrefabPostInit("ruinshat", function (inst)
 	if TheWorld.ismastersim then
 		inst.components.equippable.walkspeedmult = 1.05
 	end
