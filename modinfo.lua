@@ -1,6 +1,6 @@
 name = "原版人物加强"
 author = "猪皮"
-version = "0.0.23"
+version = "0.1.0"
 forumthread = ""
 description = [[
 加强部分人物和怪物
