@@ -471,7 +471,7 @@ AddPrefabPostInit("malbatross", ExtraLootForEpicBosses)
 AddPrefabPostInit("stalker_atrium", ExtraLootForEpicBosses)
 AddPrefabPostInit("toadstool", ExtraLootForEpicBosses)
 AddPrefabPostInit("toadstool_dark", ExtraLootForEpicBosses)
-
+-- mod TUNING
 local blinking_forbidden_pattern = {
 	"wall",
 	"fence", -- 栅栏
@@ -489,8 +489,23 @@ local blinking_forbidden_pattern = {
 	"^bee$",
 	"^beehive$"
 }
-local max_hurricane = 4
-local zhan_sha = "zhansha"
+local blinking_aoe_range = 10
+local blinking_CD = 1.5
+local blinking_main_dmg_mult = 1.25
+local blinking_other_dmg_mult = 0.85
+
+local zhan_sha_key = "zhansha"
+local zhan_sha_health_pct = 0.3
+local zhan_sha_AP_mult_normal = 1.5
+local zhan_sha_AP_mult_epic = 1.75
+local zhan_sha_sanity_rec = 3
+local zhan_sha_duration = 6
+
+local hurricane_max_count = 4
+local hurricane_slow_mult = 0.3
+local hurricane_slow_duration = 1.5
+local hurricane_AP_addition = 25
+local hurricane_AP_duration = 4
 
 -- 添加突进
 local function blink(player, target, weapon, external_ratio)
@@ -540,18 +555,33 @@ local function blink(player, target, weapon, external_ratio)
 
 		player.components.health:DoDelta(health_steal)
 		-- 吸血鬼的拥抱
-		for _, other_player in ipairs(AllPlayers) do
-			if
-				other_player ~= player and not other_player:HasTag("playerghost") and other_player.components.health and
-					other_player.Transform and
-					other_player.components.combat and
-					other_player.components.health:IsHurt() and
-					not other_player.components.health:IsDead() and
-					player:GetDistanceSqToInst(other_player) < 600
-			 then
-				player.components.talker:Say("吸血鬼的拥抱")
-				other_player.components.health:DoDelta(math.max(1, health_steal * 0.5))
-				player.components.sanity:DoDelta(-1)
+		if math.random() > 0.9 then
+			for _, other_player in ipairs(AllPlayers) do
+				if
+					other_player ~= player and not other_player:HasTag("playerghost") and other_player.components.health and
+						other_player.Transform and
+						other_player.components.combat and
+						-- other_player.components.health:IsHurt() and
+						other_player.components.health:GetPercent() < 0.5 and
+						not other_player.components.health:IsDead() and
+						player:GetDistanceSqToInst(other_player) < 600
+				 then
+					player.components.talker:Say("吸血鬼的拥抱")
+					player.components.sanity:DoDelta(-3)
+					local HOT =
+						player:DoPeriodicTask(
+						0.1,
+						function()
+							other_player.components.health:DoDelta(1)
+						end
+					)
+					player:DoTaskInTime(
+						2,
+						function()
+							HOT:Cancel()
+						end
+					)
+				end
 			end
 		end
 
@@ -634,12 +664,12 @@ AddPlayerPostInit(
 						local weapon = self:GetWeapon()
 						-- 突进
 						if weapon and weapon.blinking and weapon.components.weapon then
-							if blink(self.inst, self.target, weapon, 1.25) == true then
+							if blink(self.inst, self.target, weapon, blinking_main_dmg_mult) == true then
 								-- 开始 CD
 								removeBlink(self.inst)
 								-- CD 恢复
 								self.inst:DoTaskInTime(
-									1.5,
+									blinking_CD,
 									function()
 										recoverBlink(self.inst)
 									end
@@ -651,7 +681,7 @@ AddPlayerPostInit(
 										local tx, ty, tz = self.target.Transform:GetWorldPosition()
 										local index = 0
 										-- local sx, sy, sz = pl.Transform:GetWorldPosition()
-										for _, localPrefab in ipairs(TheSim:FindEntities(tx, ty, tz, 10)) do
+										for _, localPrefab in ipairs(TheSim:FindEntities(tx, ty, tz, blinking_aoe_range)) do
 											if
 												self.inst.components.combat:IsValidTarget(localPrefab) and localPrefab ~= self.target and
 													localPrefab.components.combat and
@@ -677,10 +707,9 @@ AddPlayerPostInit(
 												self.inst:DoTaskInTime(
 													0.01 * index,
 													function()
-														blink(self.inst, localPrefab, weapon, 0.85)
+														blink(self.inst, localPrefab, weapon, blinking_other_dmg_mult)
 													end
 												)
-												-- blink(pl, v, weapon, 0.5)
 												table.insert(attackedUnits, localPrefab)
 											end
 										end
@@ -712,20 +741,20 @@ AddPlayerPostInit(
 						if weapon and weapon.components.weapon then
 							-- 斩杀
 							if
-								self.target.components.health:GetPercent() < 0.3 and not self.target.components.health:IsDead() and
-									self.inst.components.combat.externaldamagemultipliers:CalculateModifierFromSource(zhan_sha) == 1
+								self.target.components.health:GetPercent() < zhan_sha_health_pct and not self.target.components.health:IsDead() and
+									self.inst.components.combat.externaldamagemultipliers:CalculateModifierFromSource(zhan_sha_key) == 1
 							 then
 								self.inst.components.combat.externaldamagemultipliers:SetModifier(
-									zhan_sha,
-									self.target:HasTag("epic") and 1.75 or 1.5
+									zhan_sha_key,
+									self.target:HasTag("epic") and zhan_sha_AP_mult_epic or zhan_sha_AP_mult_normal
 								)
-								self.inst.components.sanity:DoDelta(3)
+								self.inst.components.sanity:DoDelta(zhan_sha_sanity_rec)
 								self.inst:DoTaskInTime(
-									6,
+									zhan_sha_duration,
 									function()
 										pcall(
 											function()
-												self.inst.components.combat.externaldamagemultipliers:RemoveModifier(zhan_sha)
+												self.inst.components.combat.externaldamagemultipliers:RemoveModifier(zhan_sha_key)
 											end
 										)
 									end
@@ -733,7 +762,7 @@ AddPlayerPostInit(
 							end
 							-- 飓风
 							if weapon.hurricane then
-								slowDown(self.inst, self.target, 0.3, 2)
+								slowDown(self.inst, self.target, hurricane_slow_mult, hurricane_slow_duration)
 								local tx, ty, tz = self.target.Transform:GetWorldPosition()
 								local hurricane_count = 0
 								for _, localPrefab in ipairs(TheSim:FindEntities(tx, ty, tz, weapon.components.weapon.hitrange)) do
@@ -756,17 +785,17 @@ AddPlayerPostInit(
 										weapon.components.weapon:LaunchProjectile(self.inst, localPrefab)
 										-- print("launch projectile to", localPrefab)
 										-- 减速
-										slowDown(self.inst, localPrefab, 0.3, 2)
+										slowDown(self.inst, localPrefab, hurricane_slow_mult, hurricane_slow_duration)
 										-- print("after projectile", localPrefab.components.health:GetPercent(), self.target.components.health:GetPercent())
 
-										if hurricane_count >= max_hurricane then
-											weapon.components.weapon.damage = weapon.components.weapon.damage + 25
+										if hurricane_count >= hurricane_max_count then
+											weapon.components.weapon.damage = weapon.components.weapon.damage + hurricane_AP_addition
 											self.inst:DoTaskInTime(
-												4,
+												hurricane_AP_duration,
 												function()
 													pcall(
 														function()
-															weapon.components.weapon.damage = weapon.components.weapon.damage - 25
+															weapon.components.weapon.damage = weapon.components.weapon.damage - hurricane_AP_addition
 														end
 													)
 												end
