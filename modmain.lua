@@ -11,7 +11,12 @@ local total_day_time = 480
 local wilson_health = 150
 local base_armor_durability_105 = 105
 
+-- 冰箱腐烂
 TUNING.PERISH_FRIDGE_MULT = 0.333
+-- 盐罐腐烂
+TUNING.PERISH_SALTBOX_MULT = 0.125
+-- 灯腐烂
+TUNING.PERISH_MUSHROOM_LIGHT_MULT = 0.1
 -- 海钓
 -- 甩杆更远
 TUNING.OCEAN_FISHING.MAX_CAST_DIST = 24
@@ -20,16 +25,16 @@ TUNING.OCEAN_FISHING.LINE_TENSION_HIGH = 0.97
 
 -- 时间常量和速度修改
 -- 烹饪基准速度
-TUNING.BASE_COOK_TIME = 1.5
+TUNING.BASE_COOK_TIME = TUNING.BASE_COOK_TIME / 10
 -- 鼹鼠帽
-TUNING.MOLEHAT_PERISHTIME = total_day_time * 4.5
+TUNING.MOLEHAT_PERISHTIME = TUNING.MOLEHAT_PERISHTIME * 4
 -- 矿工帽
-TUNING.MINERHAT_LIGHTTIME = TUNING.MINERHAT_LIGHTTIME * 3
+TUNING.MINERHAT_LIGHTTIME = TUNING.MINERHAT_LIGHTTIME * 6
 -- 生物生成时间
 -- 龙蝇
--- TUNING.DRAGONFLY_RESPAWN_TIME = total_day_time * 30
+TUNING.DRAGONFLY_RESPAWN_TIME = TUNING.DRAGONFLY_RESPAWN_TIME / 2
 -- 地下蛤蟆
--- TUNING.TOADSTOOL_RESPAWN_TIME = total_day_time * 15
+TUNING.TOADSTOOL_RESPAWN_TIME = TUNING.TOADSTOOL_RESPAWN_TIME / 2
 
 -- 物品修改
 -- 基础
@@ -37,9 +42,9 @@ TUNING.MINERHAT_LIGHTTIME = TUNING.MINERHAT_LIGHTTIME * 3
 -- TUNING.PICKAXE_USES = 99
 -- TUNING.MULTITOOL_AXE_PICKAXE_USES = 1600
 -- 步行手杖
-TUNING.CANE_SPEED_MULT = 1.75
+TUNING.CANE_SPEED_MULT = 1.5
 -- 懒人魔杖
-TUNING.CANE_SPEED_MULT_EX = 1.95
+TUNING.CANE_SPEED_MULT_EX = 1.6
 -- 打火机
 TUNING.LIGHTER_DAMAGE = 27
 TUNING.LIGHTER_FUEL = 20000
@@ -47,7 +52,7 @@ TUNING.LIGHTER_FUEL = 20000
 TUNING.TORNADOSTAFF_USES = 120
 -- 懒人魔杖
 TUNING.ORANGESTAFF_USES = 120
---
+-- 唤星杖
 TUNING.YELLOWSTAFF_USES = 120
 
 -- 人物修改
@@ -91,23 +96,20 @@ TUNING.WENDY_HUNGER = 180
 TUNING.WENDY_SANITY = 180
 TUNING.WENDY_DAMAGE_MULT = 0.65
 TUNING.ABIGAIL_SPEED = 10
-TUNING.ABIGAIL_HEALTH = wilson_health * 8
-TUNING.ABIGAIL_HEALTH_LEVEL1 = wilson_health * 2
-TUNING.ABIGAIL_HEALTH_LEVEL2 = wilson_health * 4
-TUNING.ABIGAIL_HEALTH_LEVEL3 = wilson_health * 8
+TUNING.ABIGAIL_HEALTH = TUNING.ABIGAIL_HEALTH * 2.5
+TUNING.ABIGAIL_HEALTH_LEVEL1 = TUNING.ABIGAIL_HEALTH_LEVEL1 * 2.5
+TUNING.ABIGAIL_HEALTH_LEVEL2 = TUNING.ABIGAIL_HEALTH_LEVEL2 * 2.5
+TUNING.ABIGAIL_HEALTH_LEVEL3 = TUNING.ABIGAIL_HEALTH_LEVEL3 * 2.5
 TUNING.ABIGAIL_DAMAGE = {
 	day = 40,
 	dusk = 60,
 	night = 100
 }
-TUNING.ABIGAIL_VEX_DURATION = 4
-TUNING.ABIGAIL_VEX_DAMAGE_MOD = 1.5
-TUNING.ABIGAIL_VEX_GHOSTLYFRIEND_DAMAGE_MOD = 2.2
 TUNING.ABIGAIL_DMG_PERIOD = 1.2
 TUNING.ABIGAIL_LIGHTING = {
 	{l = 0.0, r = 0.0},
-	{l = 0.1, r = 0.8, i = 0.8, f = 0.5},
-	{l = 0.5, r = 1.5, i = 0.95, f = 0.6}
+	{l = 0.1, r = 2, i = 0.8, f = 0.5},
+	{l = 0.5, r = 4, i = 0.95, f = 0.6}
 }
 -- 麦斯威尔
 -- TUNING.SHADOWWAXWELL_SPEED = 10
@@ -133,10 +135,6 @@ TUNING.ABIGAIL_LIGHTING = {
 -- TUNING.WORMWOOD_SANITY = 200
 -- 老奶奶
 TUNING.WICKERBOTTOM_SANITY = 1000
-TUNING.WICKERBOTTOM_STALE_FOOD_HUNGER = .333
-TUNING.WICKERBOTTOM_SPOILED_FOOD_HUNGER = .167
-TUNING.WICKERBOTTOM_STALE_FOOD_HEALTH = .25
-TUNING.WICKERBOTTOM_SPOILED_FOOD_HEALTH = 0.1
 -- 蜘蛛
 -- TUNING.WEBBER_HEALTH = 350
 -- TUNING.WEBBER_SANITY = 100
@@ -229,7 +227,7 @@ TUNING.TRAP_TEETH_RADIUS = 2.25
 
 -- 生物加强
 -- 海星
-TUNING.STARFISH_TRAP_DAMAGE = 360
+TUNING.STARFISH_TRAP_DAMAGE = 420
 -- 猪
 -- TUNING.PIG_DAMAGE = 44
 -- TUNING.PIG_HEALTH = 800
@@ -335,23 +333,23 @@ TUNING.STARFISH_TRAP_DAMAGE = 360
 -- TUNING.SPIDERQUEEN_FOLLOWERS = 32
 -- TUNING.SPIDERQUEEN_GIVEBIRTHPERIOD = 7.5
 -- -- 地下蠕虫
-TUNING.WORM_HEALTH = 1200
+TUNING.WORM_HEALTH = TUNING.WORM_HEALTH * 1.5
 -- TUNING.WORM_ATTACK_PERIOD = 1.5
 -- -- 各种狗
 -- TUNING.HOUND_HEALTH = 300
--- TUNING.HOUND_DAMAGE = 30
+TUNING.HOUND_DAMAGE = TUNING.HOUND_DAMAGE * 2
 -- TUNING.FIREHOUND_HEALTH = 100
--- TUNING.FIREHOUND_DAMAGE = 75
+TUNING.FIREHOUND_DAMAGE = TUNING.FIREHOUND_DAMAGE * 2
 -- TUNING.ICEHOUND_HEALTH = 500
--- TUNING.ICEHOUND_DAMAGE = 55
+TUNING.ICEHOUND_DAMAGE = TUNING.ICEHOUND_DAMAGE * 2
 -- TUNING.MOONHOUND_HEALTH = 800
--- TUNING.MOONHOUND_DAMAGE = 70
+TUNING.MOONHOUND_DAMAGE = TUNING.MOONHOUND_DAMAGE * 2.5
 -- TUNING.MUTATEDHOUND_HEALTH = 100
--- TUNING.MUTATEDHOUND_DAMAGE = 25
+TUNING.MUTATEDHOUND_DAMAGE = TUNING.MUTATEDHOUND_DAMAGE * 2.5
 -- -- 坎普斯
 -- TUNING.KRAMPUS_HEALTH = 300
 -- -- 石虾
--- TUNING.ROCKY_DAMAGE = 300
+TUNING.ROCKY_DAMAGE = TUNING.ROCKY_DAMAGE * 2
 -- TUNING.ROCKY_HEALTH = 4000
 -- -- 猴子
 -- TUNING.MONKEY_RANGED_RANGE = 12
@@ -387,25 +385,25 @@ TUNING.WORM_HEALTH = 1200
 -- TUNING.MINOTAUR_HEALTH = 50000
 -- -- 树人
 -- TUNING.LEIF_HEALTH = 5000
--- TUNING.LEIF_DAMAGE = 200
+TUNING.LEIF_DAMAGE = TUNING.LEIF_DAMAGE * 1.5
 -- TUNING.LEIF_FLAMMABILITY = .111
 -- -- 巨鹿
 -- TUNING.DEERCLOPS_HEALTH = 12000
--- TUNING.DEERCLOPS_DAMAGE = 275
+TUNING.DEERCLOPS_DAMAGE = TUNING.DEERCLOPS_DAMAGE * 1.5
 -- -- 鹅
 -- TUNING.MOOSE_HEALTH = 25000
--- TUNING.MOOSE_DAMAGE = 220
+TUNING.MOOSE_DAMAGE = TUNING.MOOSE_DAMAGE * 1.5
 -- TUNING.MOSSLING_HEALTH = 600
--- TUNING.MOSSLING_DAMAGE = 75
+TUNING.MOSSLING_DAMAGE = TUNING.MOSSLING_DAMAGE * 1.5
 -- -- 熊獾
 -- TUNING.BEARGER_HEALTH = 30000
--- TUNING.BEARGER_DAMAGE = 355
+TUNING.BEARGER_DAMAGE = TUNING.BEARGER_DAMAGE * 1.5
 -- -- 蜜蜂女王
 -- TUNING.BEEQUEEN_HEALTH = 35000
--- TUNING.BEEQUEEN_DAMAGE = 335
+TUNING.BEEQUEEN_DAMAGE = TUNING.BEEQUEEN_DAMAGE * 1.5
 -- -- 蜂巢卫士
 -- TUNING.BEEGUARD_HEALTH = 400
--- TUNING.BEEGUARD_DAMAGE = 35
+TUNING.BEEGUARD_DAMAGE = TUNING.BEEGUARD_DAMAGE * 1.25
 -- -- 龙蝇
 -- TUNING.DRAGONFLY_HEALTH = 100000
 -- TUNING.DRAGONFLY_DAMAGE = 445
@@ -413,6 +411,17 @@ TUNING.WORM_HEALTH = 1200
 -- TUNING.DRAGONFLY_SPEED = 5 * 0.7
 -- TUNING.DRAGONFLY_FIRE_ATTACK_PERIOD = 3 * 0.7
 -- TUNING.DRAGONFLY_SPEED = 7
+TUNING.DRAGONFLY_HEALTH = 27500
+TUNING.DRAGONFLY_DAMAGE = TUNING.DRAGONFLY_DAMAGE * 1.25
+-- TUNING.DRAGONFLY_ATTACK_PERIOD = 4
+-- TUNING.DRAGONFLY_ATTACK_RANGE = 4
+-- TUNING.DRAGONFLY_HIT_RANGE = 5
+-- TUNING.DRAGONFLY_SPEED = 5
+
+-- TUNING.DRAGONFLY_FIRE_ATTACK_PERIOD = 3
+TUNING.DRAGONFLY_FIRE_DAMAGE = TUNING.DRAGONFLY_FIRE_DAMAGE * 1.25
+-- TUNING.DRAGONFLY_FIRE_HIT_RANGE = 6
+-- TUNING.DRAGONFLY_FIRE_SPEED = 7
 -- -- 蛤蟆
 -- TUNING.TOADSTOOL_HEALTH = 100000
 -- -- 复活的骨架（远古编织者）
@@ -496,7 +505,7 @@ local blinking_main_dmg_mult = 1.25
 local blinking_other_dmg_mult = 0.85
 
 local zhan_sha_key = "zhansha"
-local zhan_sha_health_pct = 0.3
+local zhan_sha_health_pct = 0.5
 local zhan_sha_AP_mult_normal = 1.5
 local zhan_sha_AP_mult_epic = 1.75
 local zhan_sha_sanity_rec = 3
@@ -556,19 +565,19 @@ local function blink(player, target, weapon, external_ratio)
 
 		player.components.health:DoDelta(health_steal)
 		-- 吸血鬼的拥抱
-		if math.random() > 0.9 then
+		if math.random() > 0.8 then
 			for _, other_player in ipairs(AllPlayers) do
 				if
 					other_player ~= player and not other_player:HasTag("playerghost") and other_player.components.health and
 						other_player.Transform and
 						other_player.components.combat and
 						-- other_player.components.health:IsHurt() and
-						other_player.components.health:GetPercent() < 0.5 and
+						(other_player.components.health:GetPercent() < 0.5 or other_player.components.health.currenthealth < 100) and
 						not other_player.components.health:IsDead() and
 						player:GetDistanceSqToInst(other_player) < 600
 				 then
 					player.components.talker:Say("吸血鬼的拥抱")
-					player.components.sanity:DoDelta(-3)
+					player.components.sanity:DoDelta(-10)
 					local HOT =
 						player:DoPeriodicTask(
 						0.1,
@@ -577,7 +586,7 @@ local function blink(player, target, weapon, external_ratio)
 						end
 					)
 					player:DoTaskInTime(
-						2,
+						5,
 						function()
 							HOT:Cancel()
 						end
@@ -913,7 +922,7 @@ AddPrefabPostInit(
 				inst.components.waterproofer:SetEffectiveness(0.5)
 			end
 
-			inst.components.equippable.walkspeedmult = 1.1
+			inst.components.equippable.walkspeedmult = 1.05
 
 			inst.components.equippable.dapperness = TUNING.DAPPERNESS_MED
 
@@ -939,7 +948,7 @@ AddPrefabPostInit(
 			inst.blinking = true
 			inst.components.weapon:SetRange(8, 1)
 
-			inst.components.equippable.walkspeedmult = 1.25
+			inst.components.equippable.walkspeedmult = 1.15
 
 			inst.components.equippable.dapperness = TUNING.DAPPERNESS_SUPERHUGE * 2
 		end
@@ -955,7 +964,7 @@ AddPrefabPostInit(
 				inst.components.waterproofer:SetEffectiveness(TUNING.WATERPROOFNESS_SMALL * 2)
 			end
 
-			inst.components.equippable.walkspeedmult = 1.05
+		-- inst.components.equippable.walkspeedmult = 1.05
 		end
 	end
 )
@@ -964,7 +973,7 @@ AddPrefabPostInit(
 	"armorruins",
 	function(inst)
 		if TheWorld.ismastersim then
-			inst.components.equippable.walkspeedmult = 1.15
+			inst.components.equippable.walkspeedmult = 1.05
 		end
 	end
 )
@@ -973,7 +982,7 @@ AddPrefabPostInit(
 	"ruinshat",
 	function(inst)
 		if TheWorld.ismastersim then
-			inst.components.equippable.walkspeedmult = 1.15
+			inst.components.equippable.walkspeedmult = 1.05
 		end
 	end
 )
@@ -982,11 +991,23 @@ AddPrefabPostInit(
 	"krampus_sack",
 	function(inst)
 		if TheWorld.ismastersim then
+			local widget = {
+				slotpos = {},
+				animbank = "ui_krampusbag_2x8",
+				animbuild = "ui_krampusbag_2x8",
+				pos = Vector3(-5, -120, 0)
+			}
+
+			for y = -1, 7 do
+				table.insert(widget.slotpos, Vector3(-162, -75 * y + 240, 0))
+				table.insert(widget.slotpos, Vector3(-162 + 75, -75 * y + 240, 0))
+			end
+
 			inst:AddTag("fridge")
 			inst.components.equippable.walkspeedmult = 1.05
 
 			inst:AddComponent("insulator")
-			inst.components.insulator:SetInsulation(TUNING.INSULATION_LARGE)
+			inst.components.insulator:SetInsulation(TUNING.INSULATION_LARGE * 2)
 		end
 	end
 )
